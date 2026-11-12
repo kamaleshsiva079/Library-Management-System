@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Return Book{% endblock %}
+{% block heading %}Return Book{% endblock %}
+{% block content %}
+<section class="card"><h2>Currently Issued Books</h2>
+  <div class="toolbar"><input type="search" placeholder="Search by student or book..." data-search="returnTable"></div>
+  <div class="table-wrap"><table id="returnTable">
+    <thead><tr><th>Student</th><th>Book</th><th>Issue Date</th><th>Due Date</th><th>Return Status</th><th>Return Date</th></tr></thead>
+    <tbody>{% for i in issues %}
+      <tr>
+        <td>{{ i.student_name }}</td><td>{{ i.book_name }}</td><td>{{ i.issue_date|dmy }}</td><td>{{ i.due_date|dmy }}</td>
+        <td><span class="badge {{ i.state|cls }}">{{ i.state if i.state != 'Issued' else 'Not returned' }}</span></td>
+        <td><form method="post" class="inline-form">
+          <input type="hidden" name="issue_id" value="{{ i.id }}">
+          <input type="date" name="return_date" value="{{ today }}" min="{{ i.issue_date }}" required>
+          <button class="btn btn-sm" type="submit">Return</button></form></td>
+      </tr>
+    {% else %}<tr><td colspan="6" class="empty">All books are back on the shelf.</td></tr>{% endfor %}</tbody>
+  </table></div>
+</section>
+{% endblock %}

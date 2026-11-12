@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Students{% endblock %}
+{% block heading %}Student Management{% endblock %}
+{% block content %}
+<section class="card"><h2>Add Student</h2>
+  <form method="post" class="form-grid">
+    <label>Student ID<input name="student_id" placeholder="S006" required></label>
+    <label>Name<input name="name" required></label>
+    <label>Department<input name="department" required></label>
+    <label>Email<input name="email" type="email" required></label>
+    <label>Phone Number<input name="phone" inputmode="numeric"></label>
+    <button class="btn" type="submit"><i class="fa-solid fa-plus"></i> Add Student</button>
+  </form>
+</section>
+
+<section class="card"><h2>Student List</h2>
+  <div class="toolbar"><input type="search" placeholder="Search by ID, name or department..." data-search="studentsTable"></div>
+  <div class="table-wrap"><table id="studentsTable">
+    <thead><tr><th>Student ID</th><th>Name</th><th>Department</th><th>Email</th><th>Phone</th><th>Actions</th></tr></thead>
+    <tbody>{% for s in rows %}
+      <tr>
+        <td>{{ s.student_id }}</td><td>{{ s.name }}</td><td>{{ s.department }}</td><td>{{ s.email }}</td><td>{{ s.phone }}</td>
+        <td class="actions">
+          <button class="icon-btn view-btn" title="View details" data-student_id="{{ s.student_id }}" data-name="{{ s.name }}"
+            data-department="{{ s.department }}" data-email="{{ s.email }}" data-phone="{{ s.phone }}"
+            data-active="{{ s.active }}" data-total="{{ s.total }}"><i class="fa-solid fa-eye"></i></button>
+          <button class="icon-btn edit-btn" title="Edit" data-action="{{ url_for('edit_student', pk=s.id) }}"
+            data-student_id="{{ s.student_id }}" data-name="{{ s.name }}" data-department="{{ s.department }}"
+            data-email="{{ s.email }}" data-phone="{{ s.phone }}"><i class="fa-solid fa-pen"></i></button>
+          <form method="post" action="{{ url_for('delete_student', pk=s.id) }}" onsubmit="return confirm('Delete this student?')">
+            <button class="icon-btn danger" title="Delete"><i class="fa-solid fa-trash"></i></button></form>
+        </td></tr>
+    {% else %}<tr><td colspan="6" class="empty">No students yet. Add one above.</td></tr>{% endfor %}</tbody>
+  </table></div>
+</section>
+
+<div class="modal" id="editModal"><div class="modal-box">
+  <h2>Edit Student <button class="modal-close" type="button">&times;</button></h2>
+  <form method="post" class="form-grid">
+    <label>Student ID<input name="student_id" required></label>
+    <label>Name<input name="name" required></label>
+    <label>Department<input name="department" required></label>
+    <label>Email<input name="email" type="email" required></label>
+    <label>Phone Number<input name="phone"></label>
+    <button class="btn" type="submit">Save changes</button>
+  </form></div></div>
+
+<div class="modal" id="viewModal"><div class="modal-box">
+  <h2>Student Details <button class="modal-close" type="button">&times;</button></h2>
+  <dl class="details">
+    <dt>Student ID</dt><dd data-field="student_id"></dd><dt>Name</dt><dd data-field="name"></dd>
+    <dt>Department</dt><dd data-field="department"></dd><dt>Email</dt><dd data-field="email"></dd>
+    <dt>Phone</dt><dd data-field="phone"></dd><dt>Books currently issued</dt><dd data-field="active"></dd>
+    <dt>Total books borrowed</dt><dd data-field="total"></dd>
+  </dl></div></div>
+{% endblock %}

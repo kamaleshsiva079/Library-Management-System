@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"><title>{% block title %}{% endblock %} | KIT Library</title></head>
+<body>
+<button class="menu-btn" id="menuBtn" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
+<aside class="sidebar" id="sidebar">
+  <div class="brand"><i class="fa-solid fa-book-open"></i> KIT Library</div>
+  {% set nav = [('dashboard','fa-house','Dashboard'),('books','fa-book','Books'),('students','fa-user-graduate','Students'),
+    ('issue_book','fa-book-open-reader','Issue Book'),('return_book','fa-rotate-left','Return Book'),
+    ('reminders','fa-bell','Due Reminders'),('overdue','fa-triangle-exclamation','Overdue & Fine')] %}
+  <nav>
+    {% for ep, icon, label in nav %}
+    <a href="{{ url_for(ep) }}" class="{{ 'active' if request.endpoint == ep }}"><i class="fa-solid {{ icon }}"></i> {{ label }}</a>
+    {% endfor %}
+    <a href="{{ url_for('logout') }}" class="logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+  </nav>
+</aside>
+<main class="content">
+  <h1 class="page-title">{% block heading %}{% endblock %}</h1>
+  {% block content %}{% endblock %}
+</main>
+<div id="toasts" data-msgs='{{ get_flashed_messages(with_categories=true)|tojson }}'></div>
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body></html>

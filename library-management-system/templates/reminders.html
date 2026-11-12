@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Due Reminders{% endblock %}
+{% block heading %}Due-Date Reminders{% endblock %}
+{% block content %}
+<section class="card"><h2>Books needing a reminder <small>due within 3 days, due today or overdue</small></h2>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Student</th><th>Book</th><th>Due Date</th><th>Days Left</th><th>Reminder Status</th><th>Action</th></tr></thead>
+    <tbody>{% for i in due %}
+      <tr class="{{ 'row-danger' if i.state == 'Overdue' else 'row-warn' }}">
+        <td>{{ i.student_name }}</td><td>{{ i.book_name }}</td><td>{{ i.due_date|dmy }}</td>
+        <td><span class="badge {{ i.state|cls }}">{{ i.days_left|days_text }}</span></td>
+        <td><span class="badge {{ 'sent' if i.reminder_count else 'pending' }}">{{ 'Sent' if i.reminder_count else 'Pending' }}</span></td>
+        <td><form method="post" action="{{ url_for('send_reminder', issue_id=i.id) }}">
+          <button class="btn btn-sm" type="submit"><i class="fa-solid fa-paper-plane"></i> {{ 'Send Again' if i.reminder_count else 'Send Reminder' }}</button></form></td>
+      </tr>
+    {% else %}<tr><td colspan="6" class="empty">No reminders needed right now.</td></tr>{% endfor %}</tbody>
+  </table></div>
+</section>
+<section class="card"><h2>Reminder History</h2>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Student Name</th><th>Book Name</th><th>Reminder Date</th><th>Reminder Status</th></tr></thead>
+    <tbody>{% for h in history %}
+      <tr><td>{{ h.student_name }}</td><td>{{ h.book_name }}</td><td>{{ h.reminder_date|dmy }}</td><td><span class="badge sent">{{ h.status }}</span></td></tr>
+    {% else %}<tr><td colspan="4" class="empty">No reminders sent yet.</td></tr>{% endfor %}</tbody>
+  </table></div>
+</section>
+{% endblock %}

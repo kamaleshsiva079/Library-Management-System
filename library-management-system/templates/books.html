@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Books{% endblock %}
+{% block heading %}Book Management{% endblock %}
+{% block content %}
+<section class="card"><h2>Add Book</h2>
+  <form method="post" class="form-grid">
+    <label>Book ID<input name="book_id" placeholder="B009" required></label>
+    <label>Book Name<input name="name" required></label>
+    <label>Author<input name="author" required></label>
+    <label>Category<input name="category" list="cats" required></label>
+    <label>ISBN<input name="isbn"></label>
+    <label>Quantity<input name="quantity" type="number" min="1" value="1" required></label>
+    <button class="btn" type="submit"><i class="fa-solid fa-plus"></i> Add Book</button>
+  </form>
+  <datalist id="cats">{% for c in cats %}<option value="{{ c }}">{% endfor %}</datalist>
+</section>
+
+<section class="card"><h2>All Books</h2>
+  <div class="toolbar">
+    <input type="search" placeholder="Search name, author, category, ISBN..." data-search="booksTable">
+    <select data-filter="booksTable"><option value="">All categories</option>{% for c in cats %}<option>{{ c }}</option>{% endfor %}</select>
+  </div>
+  <div class="table-wrap"><table id="booksTable">
+    <thead><tr><th>Book ID</th><th>Book Name</th><th>Author</th><th>Category</th><th>ISBN</th><th>Status</th><th>Actions</th></tr></thead>
+    <tbody>{% for b in rows %}
+      <tr data-cat="{{ b.category }}">
+        <td>{{ b.book_id }}</td><td>{{ b.name }}</td><td>{{ b.author }}</td><td>{{ b.category }}</td><td>{{ b.isbn }}</td>
+        <td><span class="badge {{ b.status|cls }}">{{ b.status }}</span> <small class="muted">{{ b.quantity - b.out }}/{{ b.quantity }} in</small></td>
+        <td class="actions">
+          <button class="icon-btn edit-btn" title="Edit" data-action="{{ url_for('edit_book', pk=b.id) }}"
+            data-book_id="{{ b.book_id }}" data-name="{{ b.name }}" data-author="{{ b.author }}"
+            data-category="{{ b.category }}" data-isbn="{{ b.isbn }}" data-quantity="{{ b.quantity }}"><i class="fa-solid fa-pen"></i></button>
+          <form method="post" action="{{ url_for('delete_book', pk=b.id) }}" onsubmit="return confirm('Delete this book?')">
+            <button class="icon-btn danger" title="Delete"><i class="fa-solid fa-trash"></i></button></form>
+        </td></tr>
+    {% else %}<tr><td colspan="7" class="empty">No books yet. Add your first book above.</td></tr>{% endfor %}</tbody>
+  </table></div>
+</section>
+
+<div class="modal" id="editModal"><div class="modal-box">
+  <h2>Edit Book <button class="modal-close" type="button">&times;</button></h2>
+  <form method="post" class="form-grid">
+    <label>Book ID<input name="book_id" required></label>
+    <label>Book Name<input name="name" required></label>
+    <label>Author<input name="author" required></label>
+    <label>Category<input name="category" list="cats" required></label>
+    <label>ISBN<input name="isbn"></label>
+    <label>Quantity<input name="quantity" type="number" min="1" required></label>
+    <button class="btn" type="submit">Save changes</button>
+  </form></div></div>
+{% endblock %}

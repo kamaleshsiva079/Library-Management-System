@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"><title>Knowledge Institute of Technology Library</title></head>
+<body class="public">
+<header class="topbar">
+  <div class="brand"><i class="fa-solid fa-book-open"></i> KIT Library</div>
+  <a class="btn" href="{{ url_for('login') }}">Staff Login</a>
+</header>
+<section class="hero">
+  <div>
+    <h1>Knowledge Institute of Technology Library</h1>
+    <p>A smart and simple digital library management system for managing books, students, issues, returns, reminders and fines.</p>
+    <a class="btn btn-lg" href="{{ url_for('login') }}"><i class="fa-solid fa-right-to-bracket"></i> Staff Login</a>
+  </div>
+  <div class="hero-art" aria-hidden="true">
+    <i class="fa-solid fa-book-open-reader"></i>
+    <span class="chip c-a"><i class="fa-solid fa-bell"></i> Due-date reminders</span>
+    <span class="chip c-b"><i class="fa-solid fa-indian-rupee-sign"></i> Automatic fines</span>
+    <span class="chip c-c"><i class="fa-solid fa-book"></i> Book tracking</span>
+  </div>
+</section>
+</body></html>

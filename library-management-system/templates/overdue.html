@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Overdue & Fine{% endblock %}
+{% block heading %}Overdue &amp; Fine{% endblock %}
+{% block content %}
+<div class="stats two">
+  <div class="stat c6"><i class="fa-solid fa-triangle-exclamation"></i><div><b>{{ rows|length }}</b><span>Total overdue books</span></div></div>
+  <div class="stat c7"><i class="fa-solid fa-indian-rupee-sign"></i><div><b>₹{{ total_pending }}</b><span>Total pending fine (₹5 per late day)</span></div></div>
+</div>
+
+<section class="card"><h2>Overdue Books</h2>
+  <div class="toolbar">
+    <input type="search" placeholder="Search student or book..." data-search="overdueTable">
+    <select data-filter="overdueTable"><option value="">All departments</option>{% for d in depts %}<option>{{ d }}</option>{% endfor %}</select>
+  </div>
+  <div class="table-wrap"><table id="overdueTable">
+    <thead><tr><th>Student</th><th>Book</th><th>Due Date</th><th>Return Date</th><th>Days Late</th><th>Fine</th><th>Fine Status</th></tr></thead>
+    <tbody>{% for r in rows %}
+      <tr data-cat="{{ r.department }}">
+        <td>{{ r.student_name }} <small class="muted">{{ r.department }}</small></td><td>{{ r.book_name }}</td>
+        <td>{{ r.due_date|dmy }}</td><td>{{ r.return_date|dmy if r.return_date else 'Not returned' }}</td>
+        <td>{{ r.days_late }}</td><td>₹{{ r.fine_amount }}</td>
+        <td>{% if r.state == 'Overdue' %}<span class="badge overdue">Growing - return book first</span>
+          {% elif r.fine_status == 'Paid' %}<span class="badge paid">Paid {{ r.fine_paid_date|dmy }}</span>
+          {% else %}<form method="post" action="{{ url_for('pay_fine', issue_id=r.id) }}">
+            <button class="btn btn-sm" type="submit">Mark Fine Paid</button></form>{% endif %}</td>
+      </tr>
+    {% else %}<tr><td colspan="7" class="empty">No overdue books or fines.</td></tr>{% endfor %}</tbody>
+  </table></div>
+</section>
+
+<div class="grid2">
+  <section class="card"><h2>Pending Fine by Student</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Student</th><th>Pending Fine</th></tr></thead>
+      <tbody>{% for name, amt in per_student.items() %}<tr><td>{{ name }}</td><td>₹{{ amt }}</td></tr>
+      {% else %}<tr><td colspan="2" class="empty">No pending fines.</td></tr>{% endfor %}</tbody>
+    </table></div></section>
+  <section class="card"><h2>Payment History</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Student</th><th>Book</th><th>Amount</th><th>Paid On</th></tr></thead>
+      <tbody>{% for r in paid %}<tr><td>{{ r.student_name }}</td><td>{{ r.book_name }}</td><td>₹{{ r.fine }}</td><td>{{ r.fine_paid_date|dmy }}</td></tr>
+      {% else %}<tr><td colspan="4" class="empty">No payments yet.</td></tr>{% endfor %}</tbody>
+    </table></div></section>
+</div>
+{% endblock %}

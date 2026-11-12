@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"><title>Staff Login | KIT Library</title></head>
+<body class="public">
+<header class="topbar">
+  <a class="brand" href="{{ url_for('index') }}"><i class="fa-solid fa-book-open"></i> KIT Library</a>
+</header>
+<div class="login-wrap">
+  <form class="card login-card" method="post">
+    <h2>Staff Login</h2>
+    <p class="muted">Sign in to manage the library.</p>
+    {% for cat, msg in get_flashed_messages(with_categories=true) %}<div class="alert">{{ msg }}</div>{% endfor %}
+    <label>Username<input name="username" required autofocus></label>
+    <label>Password<input name="password" type="password" required></label>
+    <button class="btn" type="submit">Log in</button>
+    <p class="muted small">Demo: admin / admin123</p>
+  </form>
+</div>
+</body></html>

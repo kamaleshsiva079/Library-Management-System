@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block heading %}Dashboard{% endblock %}
+{% block content %}
+<div class="stats">
+  {% for label, value, icon, c in cards %}
+  <div class="stat {{ c }}"><i class="fa-solid {{ icon }}"></i><div><b>{{ value }}</b><span>{{ label }}</span></div></div>
+  {% endfor %}
+</div>
+
+<div class="grid2">
+  <section class="card"><h2>Due Soon <small>within {{ 3 }} days</small></h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Student</th><th>Book</th><th>Due Date</th><th>Days Left</th></tr></thead>
+      <tbody>{% for i in soon %}
+        <tr class="row-warn"><td>{{ i.student_name }}</td><td>{{ i.book_name }}</td><td>{{ i.due_date|dmy }}</td><td>{{ i.days_left|days_text }}</td></tr>
+      {% else %}<tr><td colspan="4" class="empty">No books are due soon.</td></tr>{% endfor %}</tbody>
+    </table></div></section>
+  <section class="card"><h2>Overdue</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Student</th><th>Book</th><th>Due Date</th><th>Fine so far</th></tr></thead>
+      <tbody>{% for i in overdue %}
+        <tr class="row-danger"><td>{{ i.student_name }}</td><td>{{ i.book_name }}</td><td>{{ i.due_date|dmy }}</td><td>₹{{ i.pending }}</td></tr>
+      {% else %}<tr><td colspan="4" class="empty">No overdue books.</td></tr>{% endfor %}</tbody>
+    </table></div></section>
+</div>
+
+<div class="grid2 wide-left">
+  <section class="card"><h2>Recent Issued Books</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Student</th><th>Book</th><th>Issue Date</th><th>Due Date</th><th>Status</th></tr></thead>
+      <tbody>{% for i in recent %}
+        <tr><td>{{ i.student_name }}</td><td>{{ i.book_name }}</td><td>{{ i.issue_date|dmy }}</td><td>{{ i.due_date|dmy }}</td>
+        <td><span class="badge {{ i.state|cls }}">{{ i.state }}</span></td></tr>
+      {% else %}<tr><td colspan="5" class="empty">No books issued yet.</td></tr>{% endfor %}</tbody>
+    </table></div></section>
+  <section class="card"><h2>Overview</h2><canvas id="chart" height="220"></canvas></section>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+new Chart(document.getElementById("chart"), {
+  type: "doughnut",
+  data: { labels: ["Issued", "Returned", "Overdue"], datasets: [{ data: {{ chart|tojson }}, backgroundColor: ["#6c5ce7", "#2ba3a3", "#e5586b"], borderWidth: 0 }] },
+  options: { plugins: { legend: { position: "bottom" } }, cutout: "62%" }
+});
+</script>
+{% endblock %}
